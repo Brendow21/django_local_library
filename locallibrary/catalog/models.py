@@ -1,12 +1,13 @@
 from django.db import models
-
-# Create your models here.
 from django.urls import reverse # Used in get_absolute_url() to get URL for specified ID
 
 from django.db.models import UniqueConstraint # Constrains fields to unique values
 from django.db.models.functions import Lower # Returns lower cased value of field
+
 from django.conf import settings
+
 from datetime import date
+
 
 class Genre(models.Model):
     """Model representing a book genre."""
@@ -33,6 +34,30 @@ class Genre(models.Model):
             ),
         ]
 
+class Language(models.Model):
+    """Model representing a language a book is written in."""
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Enter a book's language (e.g. English, Spanish, etc.)"
+    )
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.name
+
+    def get_absolute_url(self):
+        """Returns the url to access a particular language instance."""
+        return reverse('language-detail', args=[str(self.id)])
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                name='language_name_case_insensitive_unique',
+                violation_error_message = "Language already exists (case insensitive match)"
+            ),
+        ]
 
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
@@ -52,6 +77,8 @@ class Book(models.Model):
     # Genre class has already been defined so we can specify the object above.
     genre = models.ManyToManyField(
         Genre, help_text="Select a genre for this book")
+    
+    language = models.ForeignKey(Language, on_delete=models.RESTRICT, null=True)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -79,7 +106,6 @@ class BookInstance(models.Model):
     due_back = models.DateField(null=True, blank=True)
     borrower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
-
     LOAN_STATUS = (
         ('m', 'Maintenance'),
         ('o', 'On loan'),
@@ -97,6 +123,7 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ['due_back']
+        permissions = (("can_mark_returned", "Set book as returned"),)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -106,6 +133,7 @@ class BookInstance(models.Model):
     def is_overdue(self):
         """Determines if the book is overdue based on due date and current date."""
         return bool(self.due_back and date.today() > self.due_back)
+
 
 class Author(models.Model):
     """Model representing an author."""
@@ -124,26 +152,3 @@ class Author(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
-
-class Language(models.Model):
-    """Model representing a Language (e.g. English, French, Japanese, etc.)"""
-    name = models.CharField(max_length=200,
-                            unique=True,
-                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
-
-    def get_absolute_url(self):
-        """Returns the url to access a particular language instance."""
-        return reverse('language-detail', args=[str(self.id)])
-
-    def __str__(self):
-        """String for representing the Model object (in Admin site etc.)"""
-        return self.name
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                Lower('name'),
-                name='language_name_case_insensitive_unique',
-                violation_error_message = "Language already exists (case insensitive match)"
-            ),
-        ]
