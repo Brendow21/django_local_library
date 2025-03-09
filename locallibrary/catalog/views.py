@@ -19,7 +19,7 @@ def index(request):
 
     # Number of books containing the word "the"
     num_books_the = Book.objects.filter(title__contains='the').count()
-
+    
     context = {
         'num_books': num_books,
         'num_instances': num_instances,
@@ -27,6 +27,7 @@ def index(request):
         'num_authors': num_authors,
         'num_genres': num_genres,
         'num_books_the': num_books_the,
+
     }
 
     # Render the HTML template index.html with the data in the context variable
@@ -50,5 +51,6 @@ class AuthorListView(generic.ListView):
 
 class AuthorDetailView(generic.DetailView):
     model = Author
+
     
     
