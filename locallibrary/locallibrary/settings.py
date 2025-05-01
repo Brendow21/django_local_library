@@ -11,11 +11,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+<<<<<<< HEAD
 from django.core.management.utils import get_random_secret_key
 
 import os
 import sys
 import dj_database_url
+=======
+import os # needed by code below
+
+>>>>>>> 939394bc00f801a1220ecd6bce5c64bca78c1afe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +30,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+=======
+SECRET_KEY = 'django-insecure-bm4(3v7s#!x=l5lw3y-dn+%19c$xtgq1^co6uuc(kh0d-6n4k6'
+>>>>>>> 939394bc00f801a1220ecd6bce5c64bca78c1afe
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
@@ -44,8 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Add our new application
-    'catalog.apps.CatalogConfig', # This object was created for us in /catalog/apps.py
+    'catalog.apps.CatalogConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +71,7 @@ ROOT_URLCONF = 'locallibrary.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'EST'
+TIME_ZONE = 'US/Eastern'
 
 USE_I18N = True
 
@@ -138,3 +146,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/'
