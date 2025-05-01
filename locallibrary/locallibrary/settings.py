@@ -9,18 +9,18 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
 from pathlib import Path
-<<<<<<< HEAD
+import environ
+BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+# Load environment variables
+env.read_env(str(BASE_DIR / ".env"))
+from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 
 import os
 import sys
 import dj_database_url
-=======
-import os # needed by code below
-
->>>>>>> 939394bc00f801a1220ecd6bce5c64bca78c1afe
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,11 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
-=======
-SECRET_KEY = 'django-insecure-bm4(3v7s#!x=l5lw3y-dn+%19c$xtgq1^co6uuc(kh0d-6n4k6'
->>>>>>> 939394bc00f801a1220ecd6bce5c64bca78c1afe
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
